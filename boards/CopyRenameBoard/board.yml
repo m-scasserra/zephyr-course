@@ -1,0 +1,6 @@
+board:
+  name: copyrenameboard
+  full_name: Nucleo F439ZI / copyrenameboard
+  vendor: st
+  socs:
+    - name: stm32f439xx
