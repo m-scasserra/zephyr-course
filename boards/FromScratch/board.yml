@@ -1,0 +1,6 @@
+board:
+  name: fromscratch
+  full_name: My STM32F439ZI Board From Scratch
+  vendor: others
+  socs:
+    - name: stm32f439xx
