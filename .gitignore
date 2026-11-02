@@ -1,6 +1,6 @@
 # Build
 build
 build-nucleo
-# West files
+twister-out
 .west
 deps
