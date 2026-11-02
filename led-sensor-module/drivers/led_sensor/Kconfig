@@ -1,0 +1,7 @@
+config LED_SENSOR
+    bool "On-board LED exposed via Sensor API"
+    default y
+    depends on DT_HAS_CUSTOM_LED_SENSOR_ENABLED
+    depends on GPIO && SENSOR
+    help
+      The LED is switched ON when sensor_sample_fetch() is called and switched OFF when sensor_channel_get() is called.

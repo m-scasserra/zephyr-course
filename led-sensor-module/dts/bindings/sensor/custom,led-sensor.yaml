@@ -1,0 +1,7 @@
+description: On-board LED controlled using the Zephyr Sensor API
+compatible: "custom,led-sensor"
+properties:
+  led:
+    type: phandle
+    required: true
+    description: Phandle to a GPIO LED node containing the gpios property
