@@ -14,7 +14,24 @@ struct led_sensor_config
 struct led_sensor_data
 {
     bool led_on;
+    uint32_t on_time_ms;
 };
+
+int led_sensor_set_on_time(const struct device *dev, uint32_t on_time_ms)
+{
+    if (dev == NULL || !device_is_ready(dev))
+    {
+        return -ENODEV;
+    }
+    if (on_time_ms == 0 || on_time_ms > UINT32_MAX)
+    {
+        return -EINVAL;
+    }
+
+    struct led_sensor_data *data = dev->data;
+    data->on_time_ms = on_time_ms;
+    return 0;
+}
 
 static int led_sensor_sample_fetch(const struct device *dev,
                                    enum sensor_channel chan)
@@ -84,6 +101,7 @@ static int led_sensor_init(const struct device *dev)
     }
 
     data->led_on = false;
+    data->on_time_ms = 1000U;
     return 0;
 }
 
