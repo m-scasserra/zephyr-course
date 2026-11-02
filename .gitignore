@@ -1,6 +1,13 @@
 # Build
 build
 build-nucleo
-twister-out
 .west
 deps
+
+# Twister
+twister-out/*
+!twister-out/coverage/
+!twister-out/coverage/**
+
+twister-out.*/*
+
