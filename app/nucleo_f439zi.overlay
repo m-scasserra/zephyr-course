@@ -1,5 +1,7 @@
 / {
-    aliases {
-        app-led = &green_led_1;
+    led_sensor0: led_sensor{
+        compatible = "custom,led-sensor";
+        led = <&green_led_1>;
+        status = "okay";
     };
 };

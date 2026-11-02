@@ -1,33 +1,44 @@
-#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/sensor.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <inttypes.h>
 
-/* The devicetree node identifier for the "led0" alias. */
-#define LED_NODE DT_ALIAS(app_led)
-
-static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED_NODE, gpios);
+#define DT_DRV_COMPAT custom_led_sensor
 
 LOG_MODULE_REGISTER(main, LOG_LEVEL_INF);
 
 int main(void)
 {
-    bool led_state = true;
+    const struct device *dev = DEVICE_DT_GET_ANY(custom_led_sensor);
+    struct sensor_value value;
+    int ret;
 
-    if (!gpio_is_ready_dt(&led))
-        return 0;
+    if (dev == NULL || !device_is_ready(dev))
+    {
+        LOG_ERR("LED sensor device not found or not ready");
+        return -ENODEV;
+    }
 
-    if (gpio_pin_configure_dt(&led, GPIO_OUTPUT_ACTIVE) < 0)
-        return 0;
-
-    LOG_INF("Starting LED heartbeat with period: %d ms", CONFIG_APP_HEARTBEAT_PERIOD_MS);
     while (1)
     {
-        if (gpio_pin_toggle_dt(&led) < 0)
-            return 0;
+        ret = sensor_sample_fetch(dev);
+        if (ret < 0)
+        {
+            LOG_ERR("sample_fetch failed: %d", ret);
+            return ret;
+        }
 
-        led_state = !led_state;
-        LOG_INF("LED state: %s", led_state ? "ON" : "OFF");
-        k_msleep(CONFIG_APP_HEARTBEAT_PERIOD_MS);
+        LOG_INF("LED ON");
+        k_msleep(1000);
+
+        ret = sensor_channel_get(dev, SENSOR_CHAN_PROX, &value);
+        if (ret < 0)
+        {
+            LOG_ERR("sensor_channel_get failed: %d", ret);
+            return ret;
+        }
+        LOG_INF("LED OFF (prev value: %d)", value.val1);
+        k_msleep(1000);
     }
     return 0;
 }
